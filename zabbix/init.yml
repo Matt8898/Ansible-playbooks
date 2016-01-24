@@ -1,0 +1,13 @@
+---
+- hosts: servers
+  remote_user: root
+  tasks:
+    - name: Install zabbix
+      package: name=zabbix-agent state=latest
+    - name: Copy config file
+      copy: src=zabbix_agentd.conf dest=/etc/zabbix_agentd.conf
+      notify:
+       - Start zabbiz
+  handlers:
+   - name: Start and enable zabbix
+     service: name=zabbix-agent state=started enabled=yes

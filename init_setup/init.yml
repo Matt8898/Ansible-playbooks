@@ -1,0 +1,11 @@
+---
+- hosts: servers
+  remote_user: root
+  tasks:
+    - name: Copy config
+      copy: src=sshd_config dest=/etc/ssh/sshd_config
+      notify:
+       - Restart sshd
+  handlers:
+   - name: Restart sshd
+     service: name=sshd state=restarted
