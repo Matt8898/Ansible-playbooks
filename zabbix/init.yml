@@ -1,5 +1,5 @@
 ---
-- hosts: servers
+- hosts: setup-needed
   remote_user: root
   tasks:
     - name: Install zabbix

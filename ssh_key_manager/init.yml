@@ -1,0 +1,6 @@
+---
+- hosts: servers
+  remote_user: root
+  tasks:
+    - name: Copy key
+      authorized_key: user=root key="{{ lookup('file', './id_rsa.pub') }}"
