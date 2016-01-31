@@ -1,0 +1,22 @@
+---
+- hosts: servers
+  remote_user: root
+  tasks:
+    - name: Install Salt minion
+      package: name=salt-minion state=installed
+    - name: Copy config file
+      copy: src=minion dest=/etc/salt/minion
+    - name: Setup firewall on Centos servers
+      firewalld: port=4505-4506/tcp immediate=true permanent=true state=enabled
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+    - name: Setup firewall on Debian servers first port
+      command: /sbin/iptables -A INPUT -m state --state new -m tcp -p tcp --dport 4505 -j ACCEPT
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    - name: Setup firewall on Debian servers port second port
+      command: /sbin/iptables -A INPUT -m state --state new -m tcp -p tcp --dport 4506 -j ACCEPT
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+      notify:
+       - Start and enable salt
+  handlers:
+   - name: Start and enable salt
+     service: name=salt-minion state=startedenabled=yes
